@@ -534,6 +534,7 @@ body {
   position: relative;
   width: 100%;
   max-width: 300px;
+  margin: 0 auto;
   padding: 20px 40px;
   background: linear-gradient(145deg, var(--white) 0%, var(--white-soft) 100%);
   border: 6px solid var(--primary-blue-dark);
@@ -568,6 +569,33 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.description-text {
+  margin-top: 24px;
+  padding: 0 20px;
+  text-align: center;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.description-text p {
+  font-size: 13px;
+  color: var(--white-soft);
+  font-weight: 500;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.description-text p:last-child {
+  margin-bottom: 0;
+}
+
+.description-text strong {
+  color: var(--white);
+  font-weight: 700;
+  text-shadow: 1px 1px 0px var(--primary-blue-dark);
 }
 
 .btn-icon {
