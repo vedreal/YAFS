@@ -56,11 +56,16 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
+  let user_id, init_data;
+  
+  if (req.method === 'GET') {
+    user_id = req.query.user_id;
+  } else if (req.method === 'POST') {
+    ({ user_id, init_data } = req.body);
+  } else {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { user_id, init_data } = req.body;
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
   if (!user_id) {
@@ -71,6 +76,8 @@ export default async function handler(req, res) {
   let verifiedUserId = null;
 
   if (isDemoUser) {
+    verifiedUserId = user_id;
+  } else if (req.method === 'GET') {
     verifiedUserId = user_id;
   } else if (!botToken) {
     return res.status(503).json({ 
