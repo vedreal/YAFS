@@ -1,0 +1,265 @@
+Tolong buatkan project MiniApp telegram, konsepnya daily claim free box (setiap 24 jam), reward random 10 - 100 coin "YAFS", label dari tampilan namanya "YAFS", cukup menu tampilan claim free box, sebelum memasukinya buatkan tema loading dengan tampilan keren menarik, tebal, sempurna, warna UI/UX semuanya biru putih gradasi premium tebal berkualitas, gaya pixel-art, 3D, dengan animasi modern. di bagian atas kiri terdapat detail nama profil telegram dan bawahnya detail jumlah perolehan coin YAFS. 
+
+saya ingin ini project untuk target deploy ke vercel + supabase sebagai backend. tanpa backend express, tolong jangan ada backend express. saya ingatkan dengan keras 
+JANGAN ADA BACKEND EXPRESS 
+JANGAN ADA BACKEND EXPRESS 
+JANGAN ADA BACKEND EXPRESS.
+
+
+
+
+ARSITEKTUR: Vercel + Supabase + Mini-App + Adsgram
+
+Komponen utama:
+
+1. Telegram Mini-App (Frontend) → HTML + JS
+
+
+2. ADS → Adsgram SDK (untuk rewarded ads)
+
+
+3. Backend API di Vercel (Node serverless, TANPA Express)
+
+
+4. Database di Supabase (menyimpan last_claim / user data)
+
+
+
+Pengguna klik tombol “Free Box” → tampil iklan Adsgram → “reward” ter-trigger → Mini-App panggil API Vercel → Vercel update Supabase → reward diberikan.
+
+
+---
+
+📁 1. STRUKTUR FOLDER BACKEND (VERCEL)
+
+tma-backend/
+ ├─ api/
+ │   ├─ reward.js         → endpoint klaim reward harian
+ │   └─ user.js           → endpoint fetch data user
+ ├─ supabaseClient.js     → koneksi ke Supabase
+ ├─ package.json
+ └─ vercel.json
+
+
+---
+
+🟩 2. FILE: package.json
+
+Hanya butuh Supabase client:
+
+{
+  "name": "tma-backend",
+  "version": "1.0.0",
+  "dependencies": {
+    "@supabase/supabase-js": "latest"
+  }
+}
+
+
+---
+
+🟦 3. FILE: supabaseClient.js
+
+import { createClient } from "@supabase/supabase-js";
+
+export const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
+  { auth: { persistSession: false } }
+);
+
+Gunakan service_role key karena ini backend, bukan frontend.
+
+
+---
+
+🟪 4. FILE: api/reward.js
+
+Ini endpoint yang dipanggil SETELAH ADS selesai, untuk update reward di Supabase.
+
+import { supabase } from "../supabaseClient.js";
+
+export default async function handler(req, res) {
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
+
+  const { user_id } = req.body;
+
+  if (!user_id)
+    return res.status(400).json({ error: "Missing user_id" });
+
+  // Cek kapan terakhir klaim
+  const { data: user } = await supabase
+    .from("users")
+    .select("last_claim")
+    .eq("id", user_id)
+    .single();
+
+  const now = Date.now();
+  const DAY = 24 * 60 * 60 * 1000;
+
+  // Kalau masih dalam 24 jam
+  if (user?.last_claim) {
+    const last = new Date(user.last_claim).getTime();
+    if (now - last < DAY) {
+      return res.json({
+        ok: false,
+        message: "Already claimed today"
+      });
+    }
+  }
+
+  // Update timestamp
+  await supabase
+    .from("users")
+    .update({ last_claim: new Date().toISOString() })
+    .eq("id", user_id);
+
+  return res.json({
+    ok: true,
+    reward: "Daily reward granted!"
+  });
+}
+
+
+---
+
+🟨 5. FILE: api/user.js
+
+Untuk mengambil data user jika diperlukan.
+
+import { supabase } from "../supabaseClient.js";
+
+export default async function handler(req, res) {
+  const id = req.query.id;
+
+  const { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  return res.json(data);
+}
+
+
+---
+
+🟥 6. FILE: vercel.json
+
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
+
+
+---
+
+🛢️ 7. SUPABASE TABLE
+
+Table: users
+
+Column	Type	Description
+
+id	text	user ID dari Telegram
+last_claim	timestamp	kapan terakhir klaim
+
+
+
+---
+
+📌 8. FLOW DI FRONTEND (MINI APP TELEGRAM)
+
+bikin alur klik Free Box → tampil iklan → sukses → panggil API reward.
+
+
+---
+
+🟦 8.1 Tambahkan Adsgram ke HTML
+
+<script src="https://adsgram.ai/js/ads.js"></script>
+
+
+---
+
+🟩 8.2 Fungsi tampil iklan + panggil reward
+
+ketika user klik tombol “Free Box”, dia dialihkan ke iklan dulu.
+
+const APP_ID = "YOUR_ADSGRAM_APP_ID";
+
+async function claimFreeBox() {
+  try {
+    // 1. Tampilkan iklan reward Adsgram
+    await Adsgram.show({
+      appId: APP_ID,
+      style: "fullscreen",
+      adType: "reward",
+      onReward: async () => {
+        // 2. Kalau iklan selesai, baru hit backend reward
+        const userId = Telegram.WebApp.initDataUnsafe.user.id;
+
+        const res = await fetch("https://your-vercel.app/api/reward", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          alert("Free Box Unlocked!");
+          // tampilkan hadiah di UI kamu
+        } else {
+          alert(data.message);
+        }
+      }
+    });
+  } catch (err) {
+    console.error("Ad failed:", err);
+  }
+}
+
+
+---
+
+🟧 8.3 Tombol di HTML
+
+<button onclick="claimFreeBox()">Free Box</button>
+
+
+---
+
+🔄 9. ALUR KERJA LENGKAP
+
+1. User klik tombol FREE BOX
+
+↓
+
+2. Adsgram fullscreen muncul (8–15 detik)
+
+↓
+
+3. Jika user tonton sampai selesai → onReward tertrigger
+
+↓
+
+4. JS memanggil API reward di Vercel
+
+↓
+
+5. Backend cek last_claim di Supabase
+
+↓
+• Kalau sudah pernah klaim → ditolak
+• Kalau belum → update timestamp + kirim ok
+↓
+
+6. Frontend menerima hasil dan buka box
+
+
+buatkan sangat menarik, tampilan bagus dan berkualitas premium.
