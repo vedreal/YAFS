@@ -1,15 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "",
+  "buildCommand": null,
   "outputDirectory": "public",
-  "functions": {
-    "api/*.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "headers": [
     {
@@ -17,7 +11,7 @@
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, X-Telegram-Init-Data" }
       ]
     }
   ]

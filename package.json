@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "YAFS Daily Claim Telegram Mini-App with Vercel + Supabase",
   "type": "module",
+  "engines": {
+    "node": ">=18.x"
+  },
   "scripts": {
     "dev": "npx serve public -l 5000",
     "start": "npx serve public -l 5000"
