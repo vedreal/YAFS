@@ -8,7 +8,7 @@ YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (1
 ### Frontend (public/)
 - `public/index.html` - Main HTML with loading screen and reward modal
 - `public/css/style.css` - Premium pixel-art 3D styling with blue-white gradient
-- `public/js/app.js` - Frontend JavaScript with Telegram SDK and Adsgram integration (Block ID: 18273)
+- `public/js/app.js` - Frontend JavaScript with Telegram SDK and Adsgram integration (Block ID: 18274)
 
 ### Backend (Vercel Serverless - NO Express!)
 - `api/reward.js` - GET/POST endpoint for claiming daily reward (supports Adsgram callback)
@@ -24,7 +24,7 @@ YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (1
 - **Frontend**: Vanilla HTML/CSS/JS with Telegram Mini-App SDK
 - **Backend**: Vercel Serverless Functions (Node.js 18+) - NO EXPRESS
 - **Database**: Supabase (PostgreSQL)
-- **Ads**: Adsgram SDK for rewarded ads (Test Platform - Block ID 18273)
+- **Ads**: Adsgram SDK for rewarded ads (Production Block ID 18274)
 - **Design**: Pixel-art 3D style, blue-white gradient, premium UI
 
 ## Supabase Table Schema
@@ -50,20 +50,20 @@ CREATE TABLE users (
 5. Animated mystery box opening
 6. Reward celebration modal with floating coins
 7. Countdown timer showing next claim time
-8. Adsgram rewarded ads integration (Test mode currently - shows "No ads" message)
+8. Adsgram rewarded ads integration (Production block 18274 - real ads!)
 9. Haptic feedback on Telegram
 10. Security: Telegram initData HMAC-SHA256 verification, 5-minute auth_date freshness check
 
 ## Deployment Status
-✅ **Production Ready!**
+✅ **Production Live!**
 - Deployed at: https://yafs-neon.vercel.app
 - GitHub connected for auto-deployment
 - All environment variables configured
-- Adsgram Block ID 18273 (Test Platform) active
+- Adsgram Block ID 18274 (Production) - REAL ADS ACTIVE!
 
 ## Recent Changes (November 26, 2025)
 - Fixed API to accept GET requests from Adsgram callbacks
-- Updated Adsgram Block ID to 18273 (test platform - no ads shown, but full API integration working)
-- Verified reward system working (coins successfully added on test)
-- App is 100% production-ready for launch
-- Next step: Wait for Adsgram production block approval for real ads to display
+- Updated Adsgram Block ID to 18274 (PRODUCTION approved!)
+- Verified reward system working (coins successfully added)
+- App is fully production-ready with real ads!
+- Security hardened with auth_date freshness check (5-minute window)

@@ -1,6 +1,6 @@
 const CONFIG = {
   API_BASE_URL: window.location.origin,
-  ADSGRAM_BLOCK_ID: '18273',
+  ADSGRAM_BLOCK_ID: '18274',
   CLAIM_COOLDOWN: 24 * 60 * 60 * 1000,
 };
 
