@@ -598,6 +598,43 @@ body {
   text-shadow: 1px 1px 0px var(--primary-blue-dark);
 }
 
+.withdraw-button {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 28px auto 0;
+  padding: 20px 40px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+  border: 6px dashed var(--primary-blue-dark);
+  border-radius: 16px;
+  cursor: not-allowed;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0.5;
+}
+
+.withdraw-button .btn-icon {
+  color: var(--primary-blue-dark);
+  opacity: 0.6;
+}
+
+.withdraw-button .btn-text {
+  color: var(--primary-blue-dark);
+  opacity: 0.6;
+}
+
+.coming-soon {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--accent-blue);
+  font-weight: 600;
+  text-shadow: 1px 1px 0px var(--primary-blue-dark);
+}
+
 .btn-icon {
   width: 28px;
   height: 28px;
