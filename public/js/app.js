@@ -173,6 +173,9 @@ function setupEventListeners() {
   document.getElementById('claim-btn').addEventListener('click', handleClaimClick);
   document.getElementById('close-modal').addEventListener('click', closeRewardModal);
   document.getElementById('mystery-box').addEventListener('click', handleClaimClick);
+  document.getElementById('share-referral-btn').addEventListener('click', shareReferralLink);
+  document.getElementById('referral-history-btn').addEventListener('click', showReferralHistory);
+  document.getElementById('close-referral-modal').addEventListener('click', closeReferralModal);
 }
 
 async function handleClaimClick() {
@@ -289,4 +292,76 @@ function hideLoadingScreen() {
     loadingScreen.classList.add('hidden');
     mainApp.classList.remove('hidden');
   }, 500);
+}
+
+function shareReferralLink() {
+  if (!userData.id) {
+    showError('User not loaded yet!');
+    return;
+  }
+
+  const referralUrl = `https://t.me/Yafscoinbot/app?startapp=ref_${userData.id}`;
+  const shareText = `Join YAFS Daily Claim! Get 50 $YAFS bonus when you use my referral link! 🎁`;
+
+  if (window.Telegram && window.Telegram.WebApp) {
+    if (navigator.share) {
+      navigator.share({
+        title: 'YAFS Referral',
+        text: shareText,
+        url: referralUrl
+      }).catch(err => console.log('Share cancelled'));
+    } else {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(referralUrl).then(() => {
+          showError('Referral link copied to clipboard! 📋');
+        });
+      }
+    }
+  } else {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(referralUrl).then(() => {
+        showError('Referral link copied! 📋');
+      });
+    }
+  }
+}
+
+async function showReferralHistory() {
+  if (!userData.id) {
+    showError('User not loaded yet!');
+    return;
+  }
+
+  const modal = document.getElementById('referral-modal');
+  const referralList = document.getElementById('referral-list');
+
+  modal.classList.remove('hidden');
+  referralList.innerHTML = '<p class="no-referrals">Loading...</p>';
+
+  try {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral?referrer_id=${userData.id}&init_data=${encodeURIComponent(userData.initData)}`);
+    const data = await response.json();
+
+    if (data.ok && data.referrals && data.referrals.length > 0) {
+      referralList.innerHTML = data.referrals.map(ref => `
+        <div class="referral-item">
+          <div class="referral-name">User ${ref.referred_user_id.substring(0, 8)}</div>
+          <div class="referral-bonus">+50 $YAFS</div>
+          <div style="font-size: 10px; margin-top: 4px; color: var(--accent-blue);">
+            ${new Date(ref.created_at).toLocaleDateString()}
+          </div>
+        </div>
+      `).join('');
+    } else {
+      referralList.innerHTML = '<p class="no-referrals">No referrals yet. Share your link to earn! 🎁</p>';
+    }
+  } catch (error) {
+    console.error('Fetch referrals error:', error);
+    referralList.innerHTML = '<p class="no-referrals">Error loading referrals</p>';
+  }
+}
+
+function closeReferralModal() {
+  const modal = document.getElementById('referral-modal');
+  modal.classList.add('hidden');
 }

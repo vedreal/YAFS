@@ -1,18 +1,19 @@
 # YAFS - Telegram Mini-App Daily Free Box
 
 ## Overview
-YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (10-100 YAFS coins every 24 hours). The app features a premium pixel-art 3D design with blue-white gradient theme, modern animations, and Adsgram integration for rewarded ads.
+YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (10-100 YAFS coins every 24 hours) with referral system. The app features a premium pixel-art 3D design with blue-white gradient theme, modern animations, and Adsgram integration for rewarded ads.
 
 ## Project Architecture
 
 ### Frontend (public/)
-- `public/index.html` - Main HTML with loading screen and reward modal
+- `public/index.html` - Main HTML with loading screen, reward modal, and referral section
 - `public/css/style.css` - Premium pixel-art 3D styling with blue-white gradient
-- `public/js/app.js` - Frontend JavaScript with Telegram SDK and Adsgram integration (Block ID: 18274)
+- `public/js/app.js` - Frontend JavaScript with Telegram SDK, Adsgram, and referral system
 
 ### Backend (Vercel Serverless - NO Express!)
 - `api/reward.js` - GET/POST endpoint for claiming daily reward (supports Adsgram callback)
 - `api/user.js` - GET endpoint for fetching user data
+- `api/referral.js` - GET/POST endpoint for referral management (stores to Supabase)
 - `supabaseClient.js` - Supabase connection helper
 
 ### Configuration
@@ -27,12 +28,25 @@ YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (1
 - **Ads**: Adsgram SDK for rewarded ads (Production Block ID 18274)
 - **Design**: Pixel-art 3D style, blue-white gradient, premium UI
 
-## Supabase Table Schema
+## Database Schema
+
+### Users Table
 ```sql
 CREATE TABLE users (
   id TEXT PRIMARY KEY,
   total_coins INTEGER DEFAULT 0,
   last_claim TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Referrals Table (NEW!)
+```sql
+CREATE TABLE referrals (
+  id BIGSERIAL PRIMARY KEY,
+  referrer_id TEXT NOT NULL,
+  referred_user_id TEXT NOT NULL,
+  bonus_amount INTEGER DEFAULT 50,
   created_at TIMESTAMP DEFAULT NOW()
 );
 ```
@@ -51,19 +65,34 @@ CREATE TABLE users (
 6. Reward celebration modal with floating coins
 7. Countdown timer showing next claim time
 8. Adsgram rewarded ads integration (Production block 18274 - real ads!)
-9. Haptic feedback on Telegram
-10. Security: Telegram initData HMAC-SHA256 verification, 5-minute auth_date freshness check
+9. **Referral System** - Share link, earn +50 $YAFS per valid referral
+10. **Referral History** - View all successful referrals with dates
+11. Withdraw button (coming soon)
+12. Haptic feedback on Telegram
+13. Security: Telegram initData HMAC-SHA256 verification, 5-minute auth_date freshness check
+
+## Referral System Flow
+1. User clicks "SHARE REFERRAL" button
+2. Generates link: `https://t.me/Yafscoinbot/app?startapp=ref_[user_id]`
+3. Link copied to clipboard or shared via Telegram
+4. Friend joins via referral link
+5. Referral data stored in Supabase automatically
+6. User gets +50 $YAFS bonus instantly
+7. User can view referral history with "History" button (small clock icon)
 
 ## Deployment Status
-✅ **Production Live!**
+✅ **Production Ready!**
 - Deployed at: https://yafs-neon.vercel.app
 - GitHub connected for auto-deployment
 - All environment variables configured
 - Adsgram Block ID 18274 (Production) - REAL ADS ACTIVE!
+- Referral system fully integrated with Supabase
 
 ## Recent Changes (November 26, 2025)
 - Fixed API to accept GET requests from Adsgram callbacks
 - Updated Adsgram Block ID to 18274 (PRODUCTION approved!)
 - Verified reward system working (coins successfully added)
-- App is fully production-ready with real ads!
-- Security hardened with auth_date freshness check (5-minute window)
+- **Added complete referral system** with Supabase backend
+- **Share link functionality** - Generate and copy referral URLs
+- **Referral history modal** - View all invited friends and bonuses
+- App is 100% production-ready with referrals & real ads!
