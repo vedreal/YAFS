@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>YAFS - Daily Free Box</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+</head>
+<body>
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-container">
+      <div class="pixel-logo">
+        <div class="logo-cube">
+          <div class="cube-face front">Y</div>
+          <div class="cube-face back">S</div>
+          <div class="cube-face right">A</div>
+          <div class="cube-face left">F</div>
+          <div class="cube-face top">S</div>
+          <div class="cube-face bottom"></div>
+        </div>
+      </div>
+      <h1 class="loading-title">YAFS</h1>
+      <p class="loading-subtitle">Daily Free Box</p>
+      <div class="loading-bar-container">
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+        <span class="loading-percent">0%</span>
+      </div>
+      <div class="pixel-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="main-app" class="main-app hidden">
+    <div class="app-header">
+      <div class="profile-section">
+        <div class="profile-avatar">
+          <span id="avatar-letter">U</span>
+        </div>
+        <div class="profile-info">
+          <h3 id="username">Loading...</h3>
+          <div class="coin-display">
+            <div class="coin-icon">
+              <span class="coin-symbol">Y</span>
+            </div>
+            <span id="coin-balance">0</span>
+            <span class="coin-label">YAFS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-content">
+      <div class="box-container">
+        <div class="mystery-box" id="mystery-box">
+          <div class="box-glow"></div>
+          <div class="box-3d">
+            <div class="box-face box-front">
+              <span class="box-icon">?</span>
+            </div>
+            <div class="box-face box-back"></div>
+            <div class="box-face box-right"></div>
+            <div class="box-face box-left"></div>
+            <div class="box-face box-top">
+              <div class="box-lock" id="box-lock"></div>
+            </div>
+            <div class="box-face box-bottom"></div>
+          </div>
+          <div class="box-shadow"></div>
+        </div>
+
+        <div class="box-info">
+          <h2 class="box-title">FREE BOX</h2>
+          <p class="box-description">Claim your daily reward!</p>
+          <p class="box-reward-range">Reward: <span class="highlight">10 - 100 YAFS</span></p>
+        </div>
+
+        <div id="timer-section" class="timer-section hidden">
+          <div class="timer-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"/>
+              <path d="M12,6a1,1,0,0,0-1,1v5a1,1,0,0,0,.29.71l3,3a1,1,0,0,0,1.42-1.42L13,11.59V7A1,1,0,0,0,12,6Z"/>
+            </svg>
+          </div>
+          <div class="timer-text">
+            <span class="timer-label">Next claim in:</span>
+            <span id="countdown" class="countdown">00:00:00</span>
+          </div>
+        </div>
+
+        <button id="claim-btn" class="claim-button">
+          <span class="btn-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20,6H16V5a3,3,0,0,0-6,0V6H4A2,2,0,0,0,2,8V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V8A2,2,0,0,0,20,6ZM12,4a1,1,0,0,1,1,1V6H11V5A1,1,0,0,1,12,4ZM20,19a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V8H20Z"/>
+            </svg>
+          </span>
+          <span class="btn-text">CLAIM FREE BOX</span>
+          <div class="btn-shine"></div>
+        </button>
+      </div>
+    </div>
+
+    <div id="reward-modal" class="reward-modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="reward-animation">
+          <div class="reward-burst"></div>
+          <div class="reward-coins">
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+          </div>
+        </div>
+        <h2 class="reward-title">CONGRATULATIONS!</h2>
+        <div class="reward-amount">
+          <span class="reward-plus">+</span>
+          <span id="reward-value">0</span>
+          <span class="reward-currency">YAFS</span>
+        </div>
+        <p class="reward-message">Your coins have been added!</p>
+        <button id="close-modal" class="close-modal-btn">AWESOME!</button>
+      </div>
+    </div>
+
+    <div id="error-toast" class="error-toast hidden">
+      <span id="error-message"></span>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "yafs-telegram-miniapp",
+  "version": "1.0.0",
+  "description": "YAFS Daily Claim Telegram Mini-App with Vercel + Supabase",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve public -l 5000",
+    "start": "npx serve public -l 5000"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "serve": "^14.2.1"
+  }
+}
