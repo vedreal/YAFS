@@ -125,6 +125,36 @@
           <span class="btn-text">WITHDRAW</span>
         </button>
         <p class="coming-soon">Coming Soon</p>
+
+        <div class="referral-section">
+          <p class="referral-description">Share your referral link to get <strong>50 $YAFS</strong> bonus from every valid friends.</p>
+          <div class="referral-actions">
+            <button id="share-referral-btn" class="share-referral-button">
+              <span class="btn-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18,5.5A3.5,3.5,0,1,1,14.5,2,3.5,3.5,0,0,1,18,5.5ZM9,6a3,3,0,1,0,3,3A3,3,0,0,0,9,6ZM18,13.5a3,3,0,1,0,3,3A3,3,0,0,0,18,13.5ZM9.5,13.4c-2.5,0-5,1.4-5,4.1V20h10V17.5C14.5,14.8,12,13.4,9.5,13.4Z"/>
+                </svg>
+              </span>
+              <span class="btn-text">SHARE REFERRAL</span>
+            </button>
+            <button id="referral-history-btn" class="referral-history-button">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20Zm3.5-9a1.5,1.5,0,1,1-3,0v-3a1.5,1.5,0,0,1,3,0Z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="referral-modal" class="referral-modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content referral-modal-content">
+        <button class="modal-close" id="close-referral-modal">&times;</button>
+        <h2 class="modal-title">REFERRAL HISTORY</h2>
+        <div id="referral-list" class="referral-list">
+          <p class="no-referrals">No referrals yet</p>
+        </div>
       </div>
     </div>
 
