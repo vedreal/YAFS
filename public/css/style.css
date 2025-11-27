@@ -571,6 +571,77 @@ body {
   transform: none;
 }
 
+.mining-button {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 16px auto 0;
+  padding: 18px 40px;
+  background: linear-gradient(145deg, #fbbf24 0%, #f59e0b 100%);
+  border: 6px solid #d97706;
+  border-radius: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 8px 0 #d97706,
+    0 12px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.mining-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 0 #d97706,
+    0 16px 30px rgba(0, 0, 0, 0.4);
+}
+
+.mining-button:active {
+  transform: translateY(4px);
+  box-shadow: 
+    0 4px 0 #d97706,
+    0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mining-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mining-timer-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px auto;
+  max-width: 320px;
+  padding: 16px 24px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 12px;
+  animation: timerPulse 2s ease-in-out infinite;
+}
+
+.mining-timer-section .timer-icon {
+  color: #fbbf24;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mining-timer-section .timer-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 .description-text {
   margin-top: 24px;
   padding: 0 20px;

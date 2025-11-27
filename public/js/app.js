@@ -11,6 +11,8 @@ let userData = {
   totalCoins: 0,
   lastClaim: null,
   nextClaimTime: null,
+  lastMining: null,
+  nextMiningTime: null,
   initData: null,
 };
 
@@ -135,6 +137,8 @@ async function loadUserData() {
         userData.totalCoins = data.total_coins || 0;
         userData.lastClaim = data.last_claim ? new Date(data.last_claim).getTime() : null;
         userData.nextClaimTime = data.next_claim_time ? parseInt(data.next_claim_time, 10) : null;
+        userData.lastMining = data.last_mining ? new Date(data.last_mining).getTime() : null;
+        userData.nextMiningTime = data.next_mining_time ? parseInt(data.next_mining_time, 10) : null;
       }
     }
   } catch (error) {
@@ -147,6 +151,7 @@ function updateUI() {
   document.getElementById('username').textContent = userData.username;
   document.getElementById('coin-balance').textContent = formatNumber(userData.totalCoins);
   updateClaimButton();
+  updateMiningButton();
 }
 
 function formatNumber(num) {
@@ -210,11 +215,104 @@ function startCountdownTimer() {
     if (remaining === 0) {
       updateClaimButton();
     }
+
+    const miningRemaining = getMiningTimeRemaining();
+    document.getElementById('mining-countdown').textContent = formatTime(miningRemaining);
+
+    if (miningRemaining === 0) {
+      updateMiningButton();
+    }
   }, 1000);
+}
+
+function updateMiningButton() {
+  const miningBtn = document.getElementById('mining-btn');
+  const miningTimerSection = document.getElementById('mining-timer-section');
+
+  if (userData.lastMining === null) {
+    miningBtn.classList.remove('hidden');
+    miningBtn.querySelector('.btn-text').textContent = 'FREE MINING';
+    miningTimerSection.classList.add('hidden');
+  } else if (canMine()) {
+    miningBtn.classList.remove('hidden');
+    miningBtn.querySelector('.btn-text').textContent = 'CLAIM NOW';
+    miningTimerSection.classList.add('hidden');
+  } else {
+    miningBtn.classList.add('hidden');
+    miningTimerSection.classList.remove('hidden');
+  }
+}
+
+function canMine() {
+  if (userData.nextMiningTime) {
+    const now = Date.now();
+    return now >= userData.nextMiningTime;
+  }
+  return userData.lastMining === null;
+}
+
+function getMiningTimeRemaining() {
+  if (userData.nextMiningTime) {
+    const now = Date.now();
+    return Math.max(0, userData.nextMiningTime - now);
+  }
+  return 0;
+}
+
+async function handleMiningClick() {
+  if (userData.lastMining !== null && !canMine()) {
+    showError('Mining not ready yet!');
+    return;
+  }
+
+  const miningBtn = document.getElementById('mining-btn');
+  miningBtn.disabled = true;
+
+  try {
+    await claimMining();
+  } catch (error) {
+    console.error('Mining error:', error);
+    showError('Mining failed. Try again!');
+    miningBtn.disabled = false;
+  }
+}
+
+async function claimMining() {
+  try {
+    const requestBody = { user_id: userData.id };
+    if (userData.initData) {
+      requestBody.init_data = userData.initData;
+    }
+
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/mining`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      const reward = data.reward || 5;
+      userData.totalCoins = data.total_coins || (userData.totalCoins + reward);
+      userData.lastMining = Date.now();
+      userData.nextMiningTime = data.next_mining_time || (Date.now() + 2 * 60 * 60 * 1000);
+
+      showError(`Mining claimed! +${reward} $YAFS`);
+      updateUI();
+    } else {
+      showError(data.message || 'Mining failed. Try again!');
+      document.getElementById('mining-btn').disabled = false;
+    }
+  } catch (error) {
+    showError('Connection error. Try again!');
+    document.getElementById('mining-btn').disabled = false;
+  }
 }
 
 function setupEventListeners() {
   document.getElementById('claim-btn').addEventListener('click', handleClaimClick);
+  document.getElementById('mining-btn').addEventListener('click', handleMiningClick);
   document.getElementById('close-modal').addEventListener('click', closeRewardModal);
   document.getElementById('mystery-box').addEventListener('click', handleClaimClick);
   document.getElementById('share-referral-btn').addEventListener('click', shareReferralLink);

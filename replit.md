@@ -14,6 +14,7 @@ YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (1
 - `api/reward.js` - GET/POST endpoint for claiming daily reward (supports Adsgram callback)
 - `api/user.js` - GET endpoint for fetching user data
 - `api/referral.js` - GET/POST endpoint for referral management (stores to Supabase)
+- `api/mining.js` - POST endpoint for mining claims every 2 hours (5 $YAFS reward)
 - `supabaseClient.js` - Supabase connection helper
 
 ### Configuration
@@ -67,9 +68,10 @@ CREATE TABLE referrals (
 8. Adsgram rewarded ads integration (Production block 18274 - real ads!)
 9. **Referral System** - Share link, earn +50 $YAFS per valid referral
 10. **Referral History** - View all successful referrals with dates
-11. Withdraw button (coming soon)
-12. Haptic feedback on Telegram
-13. Security: Telegram initData HMAC-SHA256 verification, 5-minute auth_date freshness check
+11. **Free Mining** - Claim 5 $YAFS every 2 hours (no animation)
+12. Withdraw button (coming soon)
+13. Haptic feedback on Telegram
+14. Security: Telegram initData HMAC-SHA256 verification, 5-minute auth_date freshness check
 
 ## Referral System Flow
 1. User clicks "SHARE REFERRAL" button
@@ -88,11 +90,10 @@ CREATE TABLE referrals (
 - Adsgram Block ID 18274 (Production) - REAL ADS ACTIVE!
 - Referral system fully integrated with Supabase
 
-## Recent Changes (November 26, 2025)
-- Fixed API to accept GET requests from Adsgram callbacks
-- Updated Adsgram Block ID to 18274 (PRODUCTION approved!)
-- Verified reward system working (coins successfully added)
-- **Added complete referral system** with Supabase backend
-- **Share link functionality** - Generate and copy referral URLs
-- **Referral history modal** - View all invited friends and bonuses
-- App is 100% production-ready with referrals & real ads!
+## Recent Changes (November 27, 2025)
+- Reverted cooldown back to 24 hours per user request
+- **NEW: Free Mining feature** - Claim 5 $YAFS every 2 hours
+- Mining button shows "FREE MINING" for first-time, "CLAIM NOW" when ready
+- Countdown timer shows when next mining will be available
+- Mining claims do NOT trigger mystery box animation
+- Both Daily Box (24h) and Mining (2h) working independently

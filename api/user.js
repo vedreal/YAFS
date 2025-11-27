@@ -116,11 +116,18 @@ export default async function handler(req, res) {
       ? new Date(data.last_claim).getTime() + COOLDOWN_MS
       : null;
     
+    const MINING_COOLDOWN_MS = 2 * 60 * 60 * 1000;
+    const nextMiningTime = data.last_mining 
+      ? new Date(data.last_mining).getTime() + MINING_COOLDOWN_MS
+      : null;
+    
     return res.json({
       id: data.id,
       total_coins: data.total_coins || 0,
       last_claim: data.last_claim,
       next_claim_time: nextClaimTime,
+      last_mining: data.last_mining,
+      next_mining_time: nextMiningTime,
       created_at: data.created_at
     });
   } catch (error) {
