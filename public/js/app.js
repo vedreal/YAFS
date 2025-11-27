@@ -1,7 +1,7 @@
 const CONFIG = {
   API_BASE_URL: window.location.origin,
   ADSGRAM_BLOCK_ID: '18274',
-  CLAIM_COOLDOWN: 8 * 60 * 60 * 1000,
+  CLAIM_COOLDOWN: 24 * 60 * 60 * 1000,
 };
 
 let userData = {

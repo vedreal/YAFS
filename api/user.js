@@ -111,7 +111,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const COOLDOWN_MS = 8 * 60 * 60 * 1000;
+    const COOLDOWN_MS = 24 * 60 * 60 * 1000;
     const nextClaimTime = data.last_claim 
       ? new Date(data.last_claim).getTime() + COOLDOWN_MS
       : null;

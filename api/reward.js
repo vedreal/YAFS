@@ -103,7 +103,7 @@ export default async function handler(req, res) {
       .single();
 
     const now = Date.now();
-    const COOLDOWN = 8 * 60 * 60 * 1000;
+    const COOLDOWN = 24 * 60 * 60 * 1000;
 
     if (existingUser) {
       if (existingUser.last_claim) {
