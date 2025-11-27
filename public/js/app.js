@@ -24,6 +24,7 @@ async function initApp() {
   initTelegram();
   initAdsgram();
   await loadUserData();
+  handleReferralFromLink();
   updateUI();
   setupEventListeners();
   hideLoadingScreen();
@@ -64,12 +65,6 @@ function initTelegram() {
       userData.id = user.id.toString();
       userData.username = user.username || user.first_name || 'User';
       userData.firstName = user.first_name || 'User';
-      
-      // Handle referral from start_param
-      if (tg.initDataUnsafe.start_param && tg.initDataUnsafe.start_param.startsWith('ref_')) {
-        const referrerId = tg.initDataUnsafe.start_param.substring(4);
-        recordReferral(referrerId, userData.id);
-      }
     } else {
       userData.id = 'demo_' + Math.random().toString(36).substr(2, 9);
       userData.username = 'Demo User';
@@ -79,6 +74,16 @@ function initTelegram() {
     userData.id = 'demo_' + Math.random().toString(36).substr(2, 9);
     userData.username = 'Demo User';
     userData.firstName = 'Demo';
+  }
+}
+
+function handleReferralFromLink() {
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    if (tg.initDataUnsafe && tg.initDataUnsafe.start_param && tg.initDataUnsafe.start_param.startsWith('ref_')) {
+      const referrerId = tg.initDataUnsafe.start_param.substring(4);
+      recordReferral(referrerId, userData.id);
+    }
   }
 }
 
@@ -97,6 +102,8 @@ async function recordReferral(referrerId, referredUserId) {
     const data = await response.json();
     if (data.ok) {
       console.log('Referral recorded successfully!');
+    } else {
+      console.log('Referral error:', data.error);
     }
   } catch (error) {
     console.log('Failed to record referral:', error);

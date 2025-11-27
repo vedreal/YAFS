@@ -103,19 +103,19 @@ export default async function handler(req, res) {
       .single();
 
     const now = Date.now();
-    const DAY = 24 * 60 * 60 * 1000;
+    const COOLDOWN = 8 * 60 * 60 * 1000;
 
     if (existingUser) {
       if (existingUser.last_claim) {
         const lastClaimTime = new Date(existingUser.last_claim).getTime();
-        if (now - lastClaimTime < DAY) {
-          const remaining = DAY - (now - lastClaimTime);
+        if (now - lastClaimTime < COOLDOWN) {
+          const remaining = COOLDOWN - (now - lastClaimTime);
           const hours = Math.floor(remaining / (60 * 60 * 1000));
           const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
           return res.json({
             ok: false,
             message: `Come back in ${hours}h ${minutes}m!`,
-            next_claim: lastClaimTime + DAY
+            next_claim: lastClaimTime + COOLDOWN
           });
         }
       }
