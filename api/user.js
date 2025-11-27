@@ -94,9 +94,9 @@ export default async function handler(req, res) {
       .from('users')
       .select('*')
       .eq('id', verifiedUserId)
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') {
+    if (error) {
       console.error('Supabase error:', error);
       return res.status(500).json({ error: 'Database error' });
     }
@@ -110,7 +110,12 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.json(data);
+    return res.json({
+      id: data.id,
+      total_coins: data.total_coins || 0,
+      last_claim: data.last_claim,
+      created_at: data.created_at
+    });
   } catch (error) {
     console.error('Server error:', error);
     return res.status(500).json({ error: 'Server error' });
