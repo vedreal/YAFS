@@ -106,12 +106,14 @@ export default async function handler(req, res) {
         id: verifiedUserId,
         total_coins: 0,
         last_claim: null,
+        next_claim_time: null,
         created_at: null
       });
     }
 
+    const COOLDOWN_MS = 8 * 60 * 60 * 1000;
     const nextClaimTime = data.last_claim 
-      ? new Date(data.last_claim).getTime() + (8 * 60 * 60 * 1000)
+      ? new Date(data.last_claim).getTime() + COOLDOWN_MS
       : null;
     
     return res.json({

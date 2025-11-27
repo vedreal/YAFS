@@ -174,6 +174,10 @@ function updateClaimButton() {
 }
 
 function canClaim() {
+  if (userData.nextClaimTime) {
+    const now = Date.now();
+    return now >= userData.nextClaimTime;
+  }
   if (!userData.lastClaim) return true;
   const now = Date.now();
   return now - userData.lastClaim >= CONFIG.CLAIM_COOLDOWN;
@@ -280,6 +284,7 @@ async function claimReward() {
         const reward = data.reward;
         userData.totalCoins = data.total_coins || (userData.totalCoins + reward);
         userData.lastClaim = Date.now();
+        userData.nextClaimTime = data.next_claim_time || (Date.now() + CONFIG.CLAIM_COOLDOWN);
 
         showRewardModal(reward);
         updateUI();
