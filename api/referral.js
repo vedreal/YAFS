@@ -109,8 +109,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Prevent self-referral
+    if (referrer_id === referred_user_id) {
+      return res.status(400).json({ error: 'Cannot refer yourself' });
+    }
+
     const isDemoReferrer = referrer_id?.startsWith('demo_');
-    const isDemoReferred = referred_user_id?.startsWith('demo_');
     let verifiedReferrerId = null;
 
     if (isDemoReferrer) {
@@ -119,8 +123,10 @@ export default async function handler(req, res) {
       return res.status(503).json({ error: 'Server configuration error' });
     } else if (init_data) {
       const verifiedUser = verifyTelegramWebAppData(init_data, botToken);
-      if (verifiedUser) {
-        verifiedReferrerId = verifiedUser.id.toString();
+      if (verifiedUser && verifiedUser.id.toString() === referred_user_id) {
+        verifiedReferrerId = referrer_id;
+      } else {
+        return res.status(401).json({ error: 'Authentication required' });
       }
     }
 
@@ -129,38 +135,52 @@ export default async function handler(req, res) {
     }
 
     try {
+      // Check if referral already exists
       const { data: existingReferral, error: checkError } = await supabase
         .from('referrals')
         .select('*')
-        .eq('referrer_id', verifiedReferrerId)
+        .eq('referrer_id', referrer_id)
         .eq('referred_user_id', referred_user_id)
-        .single();
+        .maybeSingle();
 
       if (existingReferral) {
         return res.status(400).json({ error: 'Already referred this user' });
       }
 
-      const { data: newReferral, error: insertError } = await supabase
+      // Record the referral
+      const { error: insertError } = await supabase
         .from('referrals')
         .insert({
-          referrer_id: verifiedReferrerId,
+          referrer_id,
           referred_user_id,
           bonus_amount: 50,
           created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+        });
 
       if (insertError) throw insertError;
 
+      // Add bonus coins to referrer
+      const { data: referrerUser, error: fetchReferrerError } = await supabase
+        .from('users')
+        .select('total_coins')
+        .eq('id', referrer_id)
+        .maybeSingle();
+
+      if (fetchReferrerError) throw fetchReferrerError;
+
+      const currentCoins = referrerUser?.total_coins || 0;
+      const newCoins = currentCoins + 50;
+
       const { error: updateError } = await supabase
         .from('users')
-        .update({ total_coins: supabase.rpc('increment_coins', { user_id: verifiedReferrerId, amount: 50 }) })
-        .eq('id', verifiedReferrerId);
+        .update({ total_coins: newCoins })
+        .eq('id', referrer_id);
+
+      if (updateError) throw updateError;
 
       return res.status(200).json({
         ok: true,
-        message: 'Referral recorded successfully!',
+        message: 'Referral recorded successfully! +50 $YAFS awarded!',
         bonus: 50
       });
     } catch (error) {
