@@ -10,6 +10,7 @@ let userData = {
   firstName: 'User',
   totalCoins: 0,
   lastClaim: null,
+  nextClaimTime: null,
   initData: null,
 };
 
@@ -133,6 +134,7 @@ async function loadUserData() {
       if (data) {
         userData.totalCoins = data.total_coins || 0;
         userData.lastClaim = data.last_claim ? new Date(data.last_claim).getTime() : null;
+        userData.nextClaimTime = data.next_claim_time ? parseInt(data.next_claim_time, 10) : null;
       }
     }
   } catch (error) {
@@ -178,6 +180,10 @@ function canClaim() {
 }
 
 function getTimeRemaining() {
+  if (userData.nextClaimTime) {
+    const now = Date.now();
+    return Math.max(0, userData.nextClaimTime - now);
+  }
   if (!userData.lastClaim) return 0;
   const now = Date.now();
   const elapsed = now - userData.lastClaim;

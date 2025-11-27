@@ -140,7 +140,8 @@ export default async function handler(req, res) {
         ok: true,
         reward: reward,
         total_coins: newTotal,
-        message: 'Reward claimed successfully!'
+        message: 'Reward claimed successfully!',
+        next_claim_time: Date.now() + COOLDOWN
       });
     } else {
       const reward = Math.floor(Math.random() * 91) + 10;
@@ -163,7 +164,8 @@ export default async function handler(req, res) {
         ok: true,
         reward: reward,
         total_coins: reward,
-        message: 'Welcome! First reward claimed!'
+        message: 'Welcome! First reward claimed!',
+        next_claim_time: Date.now() + COOLDOWN
       });
     }
   } catch (error) {

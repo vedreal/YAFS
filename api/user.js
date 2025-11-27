@@ -110,10 +110,15 @@ export default async function handler(req, res) {
       });
     }
 
+    const nextClaimTime = data.last_claim 
+      ? new Date(data.last_claim).getTime() + (8 * 60 * 60 * 1000)
+      : null;
+    
     return res.json({
       id: data.id,
       total_coins: data.total_coins || 0,
       last_claim: data.last_claim,
+      next_claim_time: nextClaimTime,
       created_at: data.created_at
     });
   } catch (error) {
