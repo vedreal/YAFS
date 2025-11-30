@@ -455,7 +455,7 @@ function shareReferralLink() {
     return;
   }
 
-  const referralUrl = `https://t.me/Yafscoin_bot/app?startapp=ref_${userData.id}`;
+  const referralUrl = `https://t.me/yafscoin_bot/app?startapp=ref_${userData.id}`;
   const shareText = `Join YAFS Daily Claim! Get 50 $YAFS bonus when you use my referral link! 🎁`;
 
   if (window.Telegram && window.Telegram.WebApp) {
