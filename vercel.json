@@ -2,7 +2,6 @@
   "version": 2,
   "buildCommand": null,
   "outputDirectory": "public",
-  "buildDir": "public",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
