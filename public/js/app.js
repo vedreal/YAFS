@@ -85,16 +85,32 @@ function initTelegram() {
 function handleReferralFromLink() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
+    console.log('🔍 Checking referral link...');
+    console.log('initDataUnsafe:', tg.initDataUnsafe);
+    console.log('start_param:', tg.initDataUnsafe?.start_param);
+    
     if (tg.initDataUnsafe && tg.initDataUnsafe.start_param && tg.initDataUnsafe.start_param.startsWith('ref_')) {
       const referrerId = tg.initDataUnsafe.start_param.substring(4);
+      console.log('✅ Referral link detected! Referrer ID:', referrerId);
+      console.log('Current user ID:', userData.id);
       recordReferral(referrerId, userData.id);
+    } else {
+      console.log('❌ No referral link detected (start_param missing or not ref_)');
     }
+  } else {
+    console.log('⚠️ Telegram WebApp not available');
   }
 }
 
 async function recordReferral(referrerId, referredUserId) {
   try {
     console.log('🔗 Recording referral:', { referrerId, referredUserId });
+    console.log('📤 Sending request to:', `${CONFIG.API_BASE_URL}/api/referral`);
+    console.log('📝 Request body:', {
+      referrer_id: referrerId,
+      referred_user_id: referredUserId,
+      init_data: userData.initData ? '✓ (present)' : '✗ (missing)'
+    });
     
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral${CACHE_BUST}`, {
       method: 'POST',
@@ -106,6 +122,7 @@ async function recordReferral(referrerId, referredUserId) {
       })
     });
     
+    console.log('📡 Response status:', response.status);
     const data = await response.json();
     console.log('📋 Referral API response:', data);
     
@@ -117,10 +134,16 @@ async function recordReferral(referrerId, referredUserId) {
       updateUI();
     } else {
       console.log('❌ Referral error:', data.error);
+      console.log('Full error response:', data);
       showError('⚠️ ' + (data.error || 'Referral failed - check console'));
     }
   } catch (error) {
     console.error('❌ Failed to record referral:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
     showError('⚠️ Connection error: ' + error.message);
   }
 }
