@@ -1,3 +1,5 @@
+const CACHE_BUST = `?t=${Date.now()}`;
+
 const CONFIG = {
   API_BASE_URL: window.location.origin,
   ADSGRAM_BLOCK_ID: '18274',
@@ -92,7 +94,7 @@ function handleReferralFromLink() {
 
 async function recordReferral(referrerId, referredUserId) {
   try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral${CACHE_BUST}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -125,7 +127,7 @@ function initAdsgram() {
 
 async function loadUserData() {
   try {
-    let url = `${CONFIG.API_BASE_URL}/api/user?id=${userData.id}`;
+    let url = `${CONFIG.API_BASE_URL}/api/user?id=${userData.id}&t=${Date.now()}`;
     if (userData.initData) {
       url += `&init_data=${encodeURIComponent(userData.initData)}`;
     }
@@ -284,7 +286,7 @@ async function claimMining() {
       requestBody.init_data = userData.initData;
     }
 
-    const response = await fetch(`${CONFIG.API_BASE_URL}/api/mining`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/mining${CACHE_BUST}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
@@ -367,7 +369,7 @@ async function claimReward() {
       requestBody.init_data = userData.initData;
     }
 
-    const response = await fetch(`${CONFIG.API_BASE_URL}/api/reward`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/reward${CACHE_BUST}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
@@ -482,7 +484,7 @@ async function showReferralHistory() {
   referralList.innerHTML = '<p class="no-referrals">Loading...</p>';
 
   try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral?referrer_id=${userData.id}&init_data=${encodeURIComponent(userData.initData)}`);
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral?referrer_id=${userData.id}&init_data=${encodeURIComponent(userData.initData)}&t=${Date.now()}`);
     const data = await response.json();
 
     if (data.ok && data.referrals && data.referrals.length > 0) {
