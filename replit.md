@@ -26,7 +26,7 @@ YAFS is a Telegram Mini-App that allows users to claim daily free box rewards (1
 - **Frontend**: Vanilla HTML/CSS/JS with Telegram Mini-App SDK
 - **Backend**: Vercel Serverless Functions (Node.js 18+) - NO EXPRESS
 - **Database**: Supabase (PostgreSQL)
-- **Ads**: Adsgram SDK for rewarded ads (Production Block ID 18274)
+- **Ads**: Adsgram SDK for rewarded ads (Production Block ID 18455)
 - **Design**: Pixel-art 3D style, blue-white gradient, premium UI
 
 ## Database Schema
@@ -87,7 +87,7 @@ CREATE TABLE referrals (
 - Deployed at: https://yafs-neon.vercel.app
 - GitHub connected for auto-deployment
 - All environment variables configured
-- Adsgram Block ID 18274 (Production) - REAL ADS ACTIVE!
+- Adsgram Block ID 18455 (Production) - REAL ADS ACTIVE!
 - Referral system fully integrated with Supabase
 - Mining feature live and working in production
 
