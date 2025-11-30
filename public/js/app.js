@@ -94,6 +94,8 @@ function handleReferralFromLink() {
 
 async function recordReferral(referrerId, referredUserId) {
   try {
+    console.log('🔗 Recording referral:', { referrerId, referredUserId });
+    
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/referral${CACHE_BUST}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -105,13 +107,21 @@ async function recordReferral(referrerId, referredUserId) {
     });
     
     const data = await response.json();
+    console.log('📋 Referral API response:', data);
+    
     if (data.ok) {
-      console.log('Referral recorded successfully!');
+      console.log('✅ Referral recorded successfully!');
+      showError('✅ Referral bonus: +50 $YAFS received!');
+      // Update user coins
+      userData.totalCoins += 50;
+      updateUI();
     } else {
-      console.log('Referral error:', data.error);
+      console.log('❌ Referral error:', data.error);
+      showError('⚠️ ' + (data.error || 'Referral failed - check console'));
     }
   } catch (error) {
-    console.log('Failed to record referral:', error);
+    console.error('❌ Failed to record referral:', error);
+    showError('⚠️ Connection error: ' + error.message);
   }
 }
 
