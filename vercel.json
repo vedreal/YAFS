@@ -2,6 +2,9 @@
   "version": 2,
   "buildCommand": null,
   "outputDirectory": "public",
+  "env": {
+    "CACHE_BUST": "v3_mining_final"
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
