@@ -89,11 +89,13 @@ CREATE TABLE referrals (
 - All environment variables configured
 - Adsgram Block ID 18274 (Production) - REAL ADS ACTIVE!
 - Referral system fully integrated with Supabase
+- Mining feature live and working in production
 
-## Recent Changes (November 27, 2025)
-- Reverted cooldown back to 24 hours per user request
-- **NEW: Free Mining feature** - Claim 5 $YAFS every 2 hours
-- Mining button shows "FREE MINING" for first-time, "CLAIM NOW" when ready
-- Countdown timer shows when next mining will be available
-- Mining claims do NOT trigger mystery box animation
-- Both Daily Box (24h) and Mining (2h) working independently
+## Recent Changes (November 30, 2025)
+- ✅ **PRODUCTION DEPLOY COMPLETE** - Mining feature now live
+- Mining button visible with "FREE MINING" / "CLAIM NOW" states
+- "Collect free $YAFS coins every day" text updated to reflect daily box + mining
+- Redeployed entire project on Vercel to clear persistent cache
+- Daily Box: 24-hour cooldown, 10-100 YAFS, Adsgram ads
+- Mining: 2-hour cooldown, 5 YAFS, NO ads, no mystery box animation
+- Both systems working independently with proper cooldown timers
